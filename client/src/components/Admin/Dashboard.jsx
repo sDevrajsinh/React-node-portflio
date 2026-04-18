@@ -93,8 +93,8 @@ const Dashboard = () => {
         fetchUserProfile(token)
       ]);
       setAnalytics(adminData.analytics);
-      setMessages(adminData.messages);
-      setProjects(adminData.projects);
+      setMessages(Array.isArray(adminData.messages) ? adminData.messages : []);
+      setProjects(Array.isArray(adminData.projects) ? adminData.projects : []);
       setUserProfile(profileData);
       setAdminForm(prev => ({ 
         ...prev, 
@@ -315,10 +315,10 @@ const Dashboard = () => {
   );
 
   const areaChartData = {
-    labels: analytics.mostVisitedPages.map(page => page._id === '/' ? 'Home' : page._id),
+    labels: (analytics.mostVisitedPages || []).map(page => page._id === '/' ? 'Home' : page._id),
     datasets: [{
       label: 'Page Views',
-      data: analytics.mostVisitedPages.map(page => page.count),
+      data: (analytics.mostVisitedPages || []).map(page => page.count),
       fill: true,
       backgroundColor: 'rgba(0, 255, 136, 0.1)',
       borderColor: '#00ff88',

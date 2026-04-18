@@ -61,7 +61,7 @@ export const submitContactMessage = async (formData) => {
 };
 
 export const trackVisitorData = async (payload) => {
-  const { data } = await api.post('/api/track', payload);
+  const { data } = await api.post('/api/visit', payload);
   return data;
 };
 

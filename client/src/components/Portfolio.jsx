@@ -139,7 +139,7 @@ const Portfolio = () => {
         const loadProjects = async () => {
             try {
                 const data = await fetchProjects();
-                setApiProjects(data);
+                setApiProjects(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Error fetching projects", error);
             } finally {
