@@ -19,6 +19,9 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for Render's load balancer (important for tracking IP addresses)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(express.json());
 app.use(cors());

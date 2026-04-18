@@ -9,11 +9,12 @@
   "scripts": {
     "client-install": "npm install --prefix client",
     "server-install": "npm install --prefix server",
-    "install-all": "npm run client-install && npm run server-install",
-    "client": "npm start --prefix client",
+    "install-all": "npm run server-install && npm run client-install",
+    "start": "node server/server.js",
     "server": "npm start --prefix server",
+    "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "npm run build --prefix client"
+    "build": "npm run install-all && npm run build --prefix client"
   },
   "author": "Devraj",
   "license": "ISC",
