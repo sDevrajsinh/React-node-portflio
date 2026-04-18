@@ -39,7 +39,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api', analyticsRoutes); 
+app.use('/api/visit', analyticsRoutes); 
 app.use('/api/resume-download', resumeRoutes);
 app.use('/api/upload', uploadRoutes);
 

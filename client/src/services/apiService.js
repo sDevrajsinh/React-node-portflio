@@ -1,9 +1,9 @@
 import axios from 'axios';
-
-// Use an empty string for API_BASE_URL to leverage relative paths.
-// This works perfectly in production when the backend serves the frontend
-// and in development via the proxy in package.json.
-export const API_BASE_URL = '';
+// Auto-detect backend URL
+const RENDER_URL = 'https://react-node-portflio.onrender.com';
+export const API_BASE_URL = window.location.hostname.includes('render.com') || window.location.hostname === 'localhost' 
+  ? '' 
+  : RENDER_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL
