@@ -1,6 +1,9 @@
 {
   "name": "mern-portfolio",
   "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "description": "MERN Stack Portfolio",
   "main": "server/server.js",
   "scripts": {
