@@ -22,23 +22,36 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
+
+// Configure Helmet to solve net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false, // Disabling CSP for simplicity; enable and configure for production if needed
+}));
+
 app.use(morgan('dev'));
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api', analyticsRoutes); // contains /track and /analytics
+app.use('/api', analyticsRoutes); 
 app.use('/api/resume-download', resumeRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Serve static files from the uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
-// Fallback for undefined routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Backend is running successfully. Please ensure you are viewing the React frontend on the correct port (e.g., http://localhost:3000) instead of the proxy port.' });
+// -------------------------- DEPLOYMENT SETUP --------------------------
+// Serve static files from the React build folder
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'client', 'build', 'index.html'));
 });
+// ----------------------------------------------------------------------
 
 const PORT = process.env.PORT || 5000;
 
