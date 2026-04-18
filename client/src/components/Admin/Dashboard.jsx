@@ -57,8 +57,8 @@ const Dashboard = () => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [resending, setResending] = useState(false);
-  const [projectView, setProjectView] = useState('grid');
-  const [projectSort, setProjectSort] = useState('newest');
+  const [projectView] = useState('grid');
+  const [projectSort] = useState('newest');
 
   // Local Settings State
   const [settings, setSettings] = useState({

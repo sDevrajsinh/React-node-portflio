@@ -22,10 +22,11 @@ const Footer = () => {
         if (data.twitter) links.push({ name: "Twitter", url: data.twitter.startsWith('http') ? data.twitter : `https://${data.twitter}`, icon: "fab fa-twitter" });
         if (data.instagram) links.push({ name: "Instagram", url: data.instagram.startsWith('http') ? data.instagram : `https://${data.instagram}`, icon: "fab fa-instagram" });
         
-        setProfile({
+        setProfile(prev => ({
+          ...prev,
           name: data.name || "Devraj Solanki",
-          socialLinks: links.length > 0 ? links : profile.socialLinks
-        });
+          socialLinks: links.length > 0 ? links : prev.socialLinks
+        }));
       } catch (err) {
         console.error("Footer profile fetch failed", err);
       }
