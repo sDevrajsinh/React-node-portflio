@@ -83,7 +83,7 @@ const Contact = () => {
                             <i class="fa-regular fa-address-book"></i>
                         </div>
                         <div>
-                            <h4>Contect</h4>
+                            <h4>Contact</h4>
                             <p>+91 926 534 4331</p>
                         </div>
                     </div>

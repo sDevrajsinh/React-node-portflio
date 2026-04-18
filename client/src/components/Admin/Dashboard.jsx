@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchAdminData, createProject, deleteProject, updateProject, requestAdminOTP, updateAdminCredentials, fetchUserProfile, verifyAdminOTP, uploadImage } from '../../services/apiService';
+import { fetchAdminData, createProject, deleteProject, updateProject, requestAdminOTP, updateAdminCredentials, fetchUserProfile, verifyAdminOTP, uploadImage, API_BASE_URL } from '../../services/apiService';
 import { Line } from 'react-chartjs-2';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -644,8 +644,8 @@ const Dashboard = () => {
                       
                       {newProject.image && (
                         <div className="image-preview-container" style={{ position: 'relative', width: '100%', height: '200px', borderRadius: '15px', overflow: 'hidden', border: '1px solid var(--glass-border)', background: '#000' }}>
-                           <img 
-                            src={newProject.image.startsWith('/') ? newProject.image : newProject.image} 
+                            <img 
+                             src={newProject.image && newProject.image.startsWith('/') ? `${API_BASE_URL}${newProject.image}` : newProject.image} 
                             alt="Preview" 
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                             onError={(e) => { e.target.style.display = 'none'; }} 

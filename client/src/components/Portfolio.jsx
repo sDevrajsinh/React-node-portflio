@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProjects, likeProjectApi } from '../services/apiService';
+import { fetchProjects, likeProjectApi, API_BASE_URL } from '../services/apiService';
 import travelimg from '../img/TravelCove.png'
 import cssImg from '../img/css coverPage.png'
 import bootstrapImg from '../img/Bootstrap coverPage.png'
@@ -226,7 +226,10 @@ const Portfolio = () => {
                     >
                         {project.featured && <div className="featured-badge">Highly Recommended</div>}
                         <div className="portfolio-project-image">
-                            <img src={imageMap[project.image] || project.image} alt={project.title} />
+                            <img 
+                                src={imageMap[project.image] || (project.image && project.image.startsWith('/') ? `${API_BASE_URL}${project.image}` : project.image)} 
+                                alt={project.title} 
+                            />
                         </div>
                         <div className="portfolio-project-content">
                             <h3 className="portfolio-project-title">{project.title}</h3>
