@@ -24,7 +24,18 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:3000', 
+    'https://react-node-portflio.onrender.com', // Render Backend Origin
+    'https://react-node-portflio.vercel.app', // Vercel Frontend
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
 
 // Configure Helmet to solve net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin
 app.use(helmet({
@@ -51,7 +62,7 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Handle React routing, return all requests to React app
-app.get('(.*)', (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.resolve(__dirname, '..', 'client', 'build', 'index.html'));
 });
 // ----------------------------------------------------------------------
