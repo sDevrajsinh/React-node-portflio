@@ -1,14 +1,18 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    // Explicitly resolve to server/uploads no matter where node is run from
-    cb(null, path.join(__dirname, '../uploads/'));
+    const dir = path.join(__dirname, '../uploads/');
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
   },
   filename(req, file, cb) {
     cb(
@@ -40,7 +44,7 @@ const upload = multer({
 router.post('/', protect, upload.single('image'), (req, res) => {
   res.send({
     message: 'Image uploaded successfully',
-    image: `/${req.file.path.replace(/\\/g, '/')}`,
+    image: `/uploads/${req.file.filename}`,
   });
 });
 
