@@ -4,6 +4,7 @@ const { getAnalytics, trackVisitor } = require('../controllers/analyticsControll
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/', trackVisitor);
+router.get('/', protect, getAnalytics);
 router.get('/analytics', protect, getAnalytics);
 
 module.exports = router;

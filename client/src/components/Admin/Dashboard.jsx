@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchAdminData, createProject, deleteProject, updateProject, requestAdminOTP, updateAdminCredentials, fetchUserProfile, verifyAdminOTP, uploadImage, API_BASE_URL } from '../../services/apiService';
+import { fetchAdminData, createProject, deleteProject, updateProject, requestAdminOTP, updateAdminCredentials, fetchUserProfile, verifyAdminOTP, uploadImage, API_BASE_URL, markMessageAsReadApi } from '../../services/apiService';
 import { Line } from 'react-chartjs-2';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -314,11 +314,24 @@ const Dashboard = () => {
     </div>
   );
 
+  const handleMarkAsRead = async (id) => {
+    const token = localStorage.getItem('adminToken');
+    try {
+      await markMessageAsReadApi(token, id);
+      setMessages(messages.map(m => m._id === id ? { ...m, isRead: true } : m));
+    } catch (err) {
+      showToast('Error modifying message status', 'error');
+    }
+  };
+
+  const unreadCount = messages.filter(m => !m.isRead).length;
+
+  // Insert before return
   const areaChartData = {
-    labels: (analytics.mostVisitedPages || []).map(page => page._id === '/' ? 'Home' : page._id),
+    labels: (analytics?.mostVisitedPages || []).map(page => page._id === '/' ? 'Home' : page._id),
     datasets: [{
       label: 'Page Views',
-      data: (analytics.mostVisitedPages || []).map(page => page.count),
+      data: (analytics?.mostVisitedPages || []).map(page => page.count),
       fill: true,
       backgroundColor: 'rgba(0, 255, 136, 0.1)',
       borderColor: '#00ff88',
@@ -381,7 +394,7 @@ const Dashboard = () => {
           <li className={activeTab === 'messages' ? 'active' : ''} onClick={() => {setActiveTab('messages'); setMobileMenuOpen(false);}}>
             <i className="fas fa-envelope sidebar-menu-icon"></i>
             <span style={{ flex: 1 }}>Messages</span>
-            {messages.length > 0 && <span className="side-badge">{messages.length}</span>}
+            {unreadCount > 0 && <span className="side-badge">{unreadCount}</span>}
           </li>
           <li className={activeTab === 'profile' ? 'active' : ''} onClick={() => {setActiveTab('profile'); setMobileMenuOpen(false);}}>
             <i className="fas fa-user-shield sidebar-menu-icon"></i>
@@ -644,8 +657,12 @@ const Dashboard = () => {
                       
                       {newProject.image && (
                         <div className="image-preview-container" style={{ position: 'relative', width: '100%', height: '200px', borderRadius: '15px', overflow: 'hidden', border: '1px solid var(--glass-border)', background: '#000' }}>
-                            <img 
-                             src={newProject.image && newProject.image.startsWith('/') ? `${API_BASE_URL}${newProject.image}` : newProject.image} 
+                             <img 
+                             src={
+                               newProject.image && newProject.image.includes('uploads') 
+                                 ? `${API_BASE_URL}/${newProject.image.replace(/\\/g, '/').replace(/^\/+/, '')}` 
+                                 : newProject.image
+                             } 
                             alt="Preview" 
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                             onError={(e) => { e.target.style.display = 'none'; }} 
@@ -692,16 +709,23 @@ const Dashboard = () => {
               <h3 className="card-panel-title">Inbox</h3>
               <div className="message-stack">
                 {messages.map((msg, idx) => (
-                  <div key={msg._id || idx} className="message-card">
+                  <div key={msg._id || idx} className="message-card" style={{ borderLeft: msg.isRead ? 'none' : '4px solid var(--accent-primary)', opacity: msg.isRead ? 0.7 : 1 }}>
                     <div className="message-header">
-                      <strong>{msg.name}</strong>
+                      <strong style={{ color: msg.isRead ? 'var(--text-muted)' : '#fff' }}>{msg.name} {!msg.isRead && <span style={{ fontSize: '0.6rem', background: 'var(--accent-primary)', padding: '2px 6px', borderRadius: '10px', color: '#000', marginLeft: '10px' }}>NEW</span>}</strong>
                       <small>{new Date(msg.createdAt).toLocaleDateString()}</small>
                     </div>
                     <p>{msg.message}</p>
-                    <a href={`mailto:${msg.email}`} className="email-link">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                      {msg.email}
-                    </a>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <a href={`mailto:${msg.email}`} className="email-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        {msg.email}
+                      </a>
+                      {!msg.isRead && (
+                        <button className="btn-secondary btn-sm" style={{ padding: '4px 10px', fontSize: '0.8rem' }} onClick={() => handleMarkAsRead(msg._id)}>
+                          Mark as Read
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
                 {messages.length === 0 && <p className="empty-msg">No messages found.</p>}

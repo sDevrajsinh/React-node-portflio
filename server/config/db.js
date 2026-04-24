@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
+    mongoose.set('strictQuery', false); // Prepare for Mongoose 7
     const conn = await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 5000, // Fail fast if IP is blocked
+      serverSelectionTimeoutMS: 15000, // Fail fast if IP is blocked, but give it 15s for Render cold starts
+      socketTimeoutMS: 45000, // Close sockets after 45s
     });
     console.log(`[DATABASE] MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {

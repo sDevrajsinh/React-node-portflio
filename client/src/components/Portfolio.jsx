@@ -227,7 +227,12 @@ const Portfolio = () => {
                         {project.featured && <div className="featured-badge">Highly Recommended</div>}
                         <div className="portfolio-project-image">
                             <img 
-                                src={imageMap[project.image] || (project.image && project.image.startsWith('/') ? `${API_BASE_URL}${project.image}` : project.image)} 
+                                src={
+                                    imageMap[project.image] || 
+                                    (project.image && project.image.includes('uploads') 
+                                        ? `${API_BASE_URL}/${project.image.replace(/\\/g, '/').replace(/^\/+/, '')}` 
+                                        : project.image)
+                                } 
                                 alt={project.title} 
                             />
                         </div>

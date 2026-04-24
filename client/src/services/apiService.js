@@ -1,9 +1,6 @@
 import axios from 'axios';
-// Auto-detect backend URL
-const RENDER_URL = 'https://react-node-portflio.onrender.com';
-export const API_BASE_URL = window.location.hostname.includes('render.com') || window.location.hostname === 'localhost' 
-  ? '' 
-  : RENDER_URL;
+// Use environment variable or fallback to production URL
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://react-node-portflio.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL
@@ -57,6 +54,13 @@ export const deleteProject = async (token, projectId) => {
 
 export const submitContactMessage = async (formData) => {
   const { data } = await api.post('/api/contact', formData);
+  return data;
+};
+
+export const markMessageAsReadApi = async (token, messageId) => {
+  const { data } = await api.patch(`/api/contact/${messageId}/read`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   return data;
 };
 
