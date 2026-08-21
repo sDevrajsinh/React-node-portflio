@@ -121,7 +121,7 @@ mongoose.set('bufferCommands', false);
       app.use(express.static(path.join(__dirname, '../client/build')));
 
       // All other routes should return the React app's index.html
-      app.get('*', (req, res) => {
+      app.get(/(.*)/, (req, res) => {
         const indexPath = path.resolve(__dirname, '..', 'client', 'build', 'index.html');
         res.sendFile(indexPath);
       });
