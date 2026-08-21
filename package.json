@@ -1,0 +1,24 @@
+{
+  "name": "mern-portfolio",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
+  "description": "MERN Stack Portfolio",
+  "main": "server/server.js",
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "server-install": "npm install --prefix server",
+    "install-all": "npm run server-install && npm run client-install",
+    "start": "node server/server.js",
+    "server": "npm start --prefix server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm run install-all && npm run build --prefix client"
+  },
+  "author": "Devraj",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
